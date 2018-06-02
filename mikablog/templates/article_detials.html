@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+{% block body %}
+    {{ pagedown.include_pagedown() }}
+    <div class="main-section mdui-color-theme">
+        <div class="mdui-container main-container">
+            <h2>
+                <span style="color:#ff4081!important;">{{ article.title[0:1] }}</span>{{ article.title[1:] }}
+            </h2>
+            <h4>{{ article.summary }}</h4>
+            <div class="main-meta-wrapper mdui-typo-caption-opacity">
+                {{ moment(article.update_time.replace(microsecond=0)).format('LLL') }}
+            </div>
+        </div>
+
+    </div>
+    <div class="mdui-container">
+        <div class="mdui-container">
+            {% autoescape false %}
+            {{ article.prints() }}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div class="mdui-chip">
+            <span class="mdui-chip-icon">
+                <i class="mdui-icon material-icons">message</i>
+            </span>
+            <span class="mdui-chip-title">评论</span>
+        </div>
+    </div>
+    <div class="mdui-container">
+        {% if not pagination %}
+            <div class="mdui-container">
+            <div class="mdui-card">
+                <div class="mdui-container">
+                    <h1> 暂无评论</h1>
+                </div>
+            </div>
+        {% endif %}
+        {% for paginations in pagination recursive %}
+            <ol>
+                <div id="{{ paginations.id }}" class="mdui-shadow-3 comment-parent comment-even">
+                    <div class="mdui-card-header">
+                        <div class="mdui-card-header-avatar">
+                            <img class="avatar" src="{{ url_for('static',filename='card.jpg') }}"
+                                 alt="Link" width="40" height="40"></div>
+                        <div class="mdui-card-header-title mdui-text-color-theme-accent">{{ paginations.author_name }}</div>
+                        <div class="mdui-card-header-subtitle">{{ paginations.timestamp }}</div>
+                    </div>
+                    <div class="mdui-card-content"><p>{{ paginations.content }}</p></div>
+                    <a href="#notreply" rel="nofollow"
+                       onclick="return TypechoComment.reply('{{ paginations.id }}', {{ paginations.id }});">
+                        <div class="mdui-card-actions">
+                            <button class="mdui-btn mdui-ripple mdui-text-color-theme-accent">回复</button>
+                        </div>
+                    </a>
+                    <div style="height:12px"></div>
+                    {{ loop(Comment.query.filter_by(reply_to=paginations.id).all()) }}
+                </div>
+                <div style="height:12px"></div>
+            </ol>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div class="mdui-chip">
+            <span class="mdui-chip-icon">
+                <i class="mdui-icon material-icons">message</i>
+            </span>
+            <span class="mdui-chip-title">添加新评论</span>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div id="comments">
+            <div class="card-spacer"></div>
+            <div id="notreply" class="mdui-card mdui-shadow-3">
+                <form method="POST" action="{{ url_for('main.articleDetails',id=id) }}" role="form">
+                    {{ form.hidden_tag() }}
+                    {{ form.follow(type='hidden',id="form_follow") }}
+                    <div class="mdui-card-content">
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <i class="mdui-icon material-icons">account_circle</i>
+                            <label for="form_name" class="mdui-textfield-label">称呼</label>
+                            {{ form.name(class_="mdui-textfield-input",id="form_name") }}
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <i class="mdui-icon material-icons">email</i>
+                            <label for="form_email" class="mdui-textfield-label">Email</label>
+                            {{ form.email(class_="mdui-textfield-input",id="form_email",type="email") }}
+                        </div>
+                        <a id="cancel-comment-reply-link" rel="nofollow"
+                           style="display: none;" onclick="return TypechoComment.cancelReply();">
+                            <div class="mdui-chip">
+                                <span class="mdui-chip-icon">
+                                <i class="mdui-icon material-icons">cancel</i>
+                                </span>
+                                <span class="mdui-chip-title">取消回复</span>
+                            </div>
+                        </a>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <i class="mdui-icon material-icons">textsms</i>
+                            <label for="form_content" class="mdui-textfield-label">内容</label>
+                            {{ form.content(class_="mdui-textfield-input",id="form_content",row="8",type="text") }}
+                        </div>
+                    </div>
+                    <div class="mdui-card-actions">
+                        <button class="mdui-btn mdui-ripple mdui-text-color-theme-accent" type="submit">发表评论
+                        </button>
+                    </div>
+                    <input type="hidden" name="_" value="">
+                </form>
+            </div>
+            <div class="card-spacer"></div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            window.TypechoComment = {
+                dom: function (id) {
+                    return document.getElementById(id);
+                },
+                create: function (tag, attr) {
+                    var el = document.createElement(tag);
+
+                    for (var key in attr) {
+                        el.setAttribute(key, attr[key]);
+                    }
+
+                    return el;
+                },
+                reply: function (cid, coid) {
+                    document.getElementById("form_follow").value = cid;
+                    var comment = this.dom(cid), parent = comment.parentNode,
+                        response = this.dom('notreply'), input = this.dom('comment-parent'),
+                        form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                        textarea = response.getElementsByTagName('textarea')[0];
+                    if (null == input) {
+                        input = this.create('input', {
+                            'type': 'hidden',
+                            'name': 'parent',
+                            'id': 'comment-parent'
+                        });
+
+                        form.appendChild(input);
+                    }
+                    input.setAttribute('value', coid);
+                    if (null == this.dom('comment-form-place-holder')) {
+                        var holder = this.create('div', {
+                            'id': 'comment-form-place-holder'
+                        });
+                        response.parentNode.insertBefore(holder, response);
+                    }
+                    comment.appendChild(response);
+                    this.dom('cancel-comment-reply-link').style.display = '';
+
+                    if (null != textarea && 'text' == textarea.name) {
+                        textarea.focus();
+                    }
+                    return false;
+                },
+                cancelReply: function () {
+                    document.getElementById("form_follow").value = "-1";
+                    var response = this.dom('notreply'),
+                        holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
+
+                    if (null != input) {
+                        input.parentNode.removeChild(input);
+                    }
+                    if (null == holder) {
+                        return true;
+                    }
+                    this.dom('cancel-comment-reply-link').style.display = 'none';
+                    holder.parentNode.insertBefore(response, holder);
+                    return false;
+                }
+            };
+        })();
+    </script>
+{% endblock %}

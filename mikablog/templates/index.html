@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+    {% if title=='首页' %}
+        <div class="main-section mdui-color-theme">
+            <div class="mdui-container main-container">
+                <h2>
+                    <span style="color:#ff4081!important;">M</span>ika's
+                    <span style="color:#ff4081!important;">B</span>log
+                </h2>
+                <h4>这是一个计算机鶸的博客</h4>
+                <div class="main-meta-wrapper mdui-typo-caption-opacity">
+                <span class="main-meta-item">
+                    <i class="iconfont icon-github"></i>
+                    <a href="https://github.com/hexiaoyanh" rel="nofollow"
+                       target="_blank" class="main-meta-btn">Github
+                    </a>
+                </span>
+                    <span class="main-meta-item">
+                    <i class="iconfont icon-qq"></i>
+                    QQ：785010323
+                </span>
+                </div>
+            </div>
+        </div>
+    {% elif title=='C++' %}
+        <div class="main-section mdui-color-theme">
+            <div class="mdui-container main-container">
+                <h2>
+                    <span style="color:#ff4081!important;">C</span>++
+                </h2>
+                <h4>关于ACM的解题</h4>
+                <div class="main-meta-wrapper mdui-typo-caption-opacity">
+
+                </div>
+            </div>
+        </div>
+    {% elif title=='Python' %}
+        <div class="main-section mdui-color-theme">
+            <div class="mdui-container main-container">
+                <h2>
+                    <span style="color:#ff4081!important;">P</span>ython
+                </h2>
+                <h4>Python遇到的细节和其他问题</h4>
+                <div class="main-meta-wrapper mdui-typo-caption-opacity">
+
+                </div>
+            </div>
+        </div>
+    {% elif title=='Linux' %}
+        <div class="main-section mdui-color-theme">
+            <div class="mdui-container main-container">
+                <h2>
+                    <span style="color:#ff4081!important;">L</span>inux
+                </h2>
+                <h4>Linux以下的编程问题</h4>
+                <div class="main-meta-wrapper mdui-typo-caption-opacity">
+
+                </div>
+            </div>
+        </div>
+    {% elif title=='Flask' %}
+        <div class="main-section mdui-color-theme">
+            <div class="mdui-container main-container">
+                <h2>
+                    <span style="color:#ff4081!important;">F</span>lask
+                </h2>
+                <h4>关于Flask这个框架的一些问题</h4>
+                <div class="main-meta-wrapper mdui-typo-caption-opacity">
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="theme-posts">
+        {% for paginations in pagination %}
+            <div class="theme-posts__post">
+                <article class="mdui-card mdui-hoverable">
+                    <section class="mdui-card-media theme-posts__post__media"
+                             style="background-image: url({{ url_for('static',filename='1.jpg') }})">
+                        <img src="{{ url_for('static',filename='1.jpg') }}" class="theme-posts__post__media__image">
+                        <div class="mdui-card-media-covered theme-posts__post__media-covered">
+                            <div class="mdui-card-primary mdui-typo">
+                                <a href="{{ url_for('main.articleDetails',id=paginations.id) }}" target="_self"
+                                   class="mdui-card-primary-title mdui-text-truncate">
+                                    {{ paginations.title }}
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mdui-card-content">
+                        {{ paginations.summary }}
+                    </section>
+                    <div class="mdui-divider" style="margin: 0 16px;"></div>
+                    <section class="theme-posts__post__footer">
+                        <a href="{{ url_for('main.articleTypes',id=paginations.articleType_id ) }}" class="theme-link--no-style">
+                            <div class="mdui-chip theme-posts__post__footer__categories">
+                                <span class="mdui-chip-icon">
+                                    <i class="mdui-icon material-icons mdui-text-center"></i>
+                                </span>
+                                <span class="mdui-chip-title">{{ ArticleType.query.filter_by(id=paginations.articleType_id).first().name }}</span>
+                            </div>
+                        </a>
+                        <div class="theme-spacer"></div>
+                        <div class="mdui-valign">
+                            <div>
+                                {{ paginations.create_time }}
+                            </div>
+                        </div>
+                    </section>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

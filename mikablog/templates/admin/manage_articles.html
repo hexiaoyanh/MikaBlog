@@ -1,0 +1,66 @@
+{% extends "adminbase.html" %}
+
+{% block body %}
+    <div class="main-section mdui-color-theme">
+        <div class="mdui-container main-container">
+            <h2>
+                <span style="color:#ff4081!important;">管</span>理博文
+            </h2>
+            <h4>一个计算机废柴的个人博客</h4>
+            <div class="main-meta-wrapper mdui-typo-caption-opacity">
+            </div>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div class="mdui-chip">
+            <span class="mdui-chip-icon">A</span>
+            <span class="mdui-chip-title">博文总数: {{ Article.query.count() }}</span>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <form method="POST" action="" role="form">
+            {{ form.csrf_token }}
+            <select class="mdui-select" mdui-select id="types_choice" name="types" required>
+                <option selected value="-1">全部分类</option>
+                <option value="1">未分类</option>
+                <option value="2">C++</option>
+                <option value="3">Python</option>
+                <option value="4">Linux</option>
+                <option value="5">Flask</option>
+            </select>
+            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">筛选</button>
+        </form>
+    </div>
+    <div class="mdui-container">
+        <tr class="mdui-card">
+            <div class="mdui-table-fluid ">
+                <table class="mdui-table mdui-table-selectable">
+                    <thead>
+                    <tr>
+                        <th><i class="mdui-icon material-icons">title</i>标题</th>
+                        <th><i class="mdui-icon material-icons">archive</i>分类</th>
+                        <th><i class="mdui-icon material-icons">access_time</i>时间</th>
+                        <th><i class="mdui-icon material-icons">edit</i>编辑</th>
+                        <th><i class="mdui-icon material-icons">delete</i>删除</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in articles %}
+                        <tr>
+                            <td><i class="mdui-icon material-icons">title</i>{{ item.title }}</td>
+                            <td><i class="mdui-icon material-icons">archive</i>{{ item.articleType_id }}</td>
+                            <td><i class="mdui-icon material-icons">access_time</i>{{ item.create_time }}</td>
+                            <td><i class="mdui-icon material-icons">edit</i><a
+                                    class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple"
+                                    href="{{ url_for('admin.editArticles',id=item.id) }}">编辑</a></td>
+                            <td><i class="mdui-icon material-icons">delete</i><a
+                                    class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple"
+                                    href="{{ url_for('admin.delete_article',id=item.id) }}">删除</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </tr>
+    </div>
+{% endblock %}

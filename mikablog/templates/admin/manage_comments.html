@@ -1,0 +1,81 @@
+{% extends "adminbase.html" %}
+
+
+
+{% block body %}
+    {{ pagedown.include_pagedown() }}
+    <div class="main-section mdui-color-theme">
+        <div class="mdui-container main-container">
+            <h2>
+                <span style="color:#ff4081!important;">博</span>文评论
+            </h2>
+            <h4>苟利国家生死以</h4>
+            <div class="main-meta-wrapper mdui-typo-caption-opacity">
+            </div>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div class="mdui-chip">
+            <span class="mdui-chip-icon">A</span>
+            <span class="mdui-chip-title">评论总数: {{ Comment.query.count() }}</span>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <tr class="mdui-card">
+            <h2>管理员评论</h2>
+            <div class="mdui-table-fluid ">
+                <table class="mdui-table mdui-table-selectable">
+                    <thead>
+                    <tr>
+                        <th><i class="mdui-icon material-icons">title</i>内容</th>
+                        <th><i class="mdui-icon material-icons">account_box</i>用户名</th>
+                        <th><i class="mdui-icon material-icons">email</i>Email</th>
+                        <th><i class="mdui-icon material-icons">delete</i>删除</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in admincomment %}
+                        <tr>
+                            <th><i class="mdui-icon material-icons">title</i>{{ item.content }}</th>
+                            <th><i class="mdui-icon material-icons">account_box</i>{{ item.author_name }}</th>
+                            <th><i class="mdui-icon material-icons">email</i>{{ item.author_email }}</th>
+                            <td><i class="mdui-icon material-icons">delete</i><a
+                                    class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple"
+                                    href="{{ url_for('admin.delete_comment',id=item.id) }}">删除</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </tr>
+    </div>
+    <div class="mdui-container">
+        <tr class="mdui-card">
+            <h2>普通用户评论</h2>
+            <div class="mdui-table-fluid ">
+                <table class="mdui-table mdui-table-selectable">
+                    <thead>
+                    <tr>
+                        <th><i class="mdui-icon material-icons">title</i>内容</th>
+                        <th><i class="mdui-icon material-icons">account_box</i>用户名</th>
+                        <th><i class="mdui-icon material-icons">email</i>Email</th>
+                        <th><i class="mdui-icon material-icons">delete</i>删除</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in comment %}
+                        <tr>
+                            <th><i class="mdui-icon material-icons">title</i>{{ item.content }}</th>
+                            <th><i class="mdui-icon material-icons">account_box</i>{{ item.author_name }}</th>
+                            <th><i class="mdui-icon material-icons">email</i>{{ item.author_email }}</th>
+                            <td><i class="mdui-icon material-icons">delete</i><a
+                                    class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple"
+                                    href="{{ url_for('admin.delete_comment',id=item.id) }}">删除</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </tr>
+    </div>
+{% endblock %}

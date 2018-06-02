@@ -1,0 +1,58 @@
+{% extends "adminbase.html" %}
+
+
+
+{% block body %}
+    {{ pagedown.include_pagedown() }}
+    <div class="main-section mdui-color-theme">
+        <div class="mdui-container main-container">
+            <h2>
+                <span style="color:#ff4081!important;">{{ title[0:1] }}</span>{{ title[1:] }}
+            </h2>
+            <h4>一个计算机废柴的个人博客</h4>
+            <div class="main-meta-wrapper mdui-typo-caption-opacity">
+            </div>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <div id="comments">
+            <div class="card-spacer"></div>
+            <div id="notreply" class="mdui-card mdui-shadow-3">
+                <form method="POST" action="{{ url_for('admin.submitArticles') }}" role="form">
+                    {{ form.hidden_tag() }}
+                    <div class="mdui-card-content">
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <i class="mdui-icon material-icons">account_circle</i>
+                            <label for="form_name" class="mdui-textfield-label">标题</label>
+                            {{ form.title(class_="mdui-textfield-input",id="form_name") }}
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <i class="mdui-icon material-icons">email</i>
+                            <label for="form_email" class="mdui-textfield-label">文章摘要</label>
+                            {{ form.summary(class_="mdui-textfield-input",id="form_email",type="email") }}
+                        </div>
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            <b>{{ form.content.label }}</b>
+                            {{ form.content(rows=20, style='width:100%') }}
+                        </div>
+                        {% if text %}
+                            <div class="mdui-textfield mdui-textfield-floating-label">
+                                {{ text }}
+                            </div>
+                        {% endif %}
+                        <div class="mdui-textfield mdui-textfield-floating-label">
+                            {{ form.types.label(class='control-label') }}：
+                            {{ form.types(class_='mdui-select') }}
+                        </div>
+                    </div>
+                    <div class="mdui-card-actions">
+                        <button class="mdui-btn mdui-ripple mdui-text-color-theme-accent" type="submit">发表
+                        </button>
+                    </div>
+                    <input type="hidden" name="_" value="">
+                </form>
+            </div>
+            <div class="card-spacer"></div>
+        </div>
+    </div>
+{% endblock %}

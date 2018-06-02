@@ -1,0 +1,27 @@
+{% extends "adminbase.html" %}
+
+{% block body %}
+
+    <div class="main-section mdui-color-theme">
+        <div class="mdui-container main-container">
+            <h2>
+                <span style="color:#ff4081!important;">后</span>台管理系统
+            </h2>
+            <h4>一个计算机废柴的个人博客</h4>
+            <div class="main-meta-wrapper mdui-typo-caption-opacity">
+            </div>
+        </div>
+    </div>
+
+    <div class="mdui-container">
+        <div class="mdui-card">
+            <div class="mdui-container">
+                <h1> 欢迎来到博客后台界面</h1>
+            </div>
+            <div class="mdui-card mdui-typo">
+                Your Name: {{ user.username }}
+                You Email: {{ user.email }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
